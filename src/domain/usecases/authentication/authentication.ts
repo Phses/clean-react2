@@ -1,6 +1,6 @@
-import { authParams, authToken } from "../models/models";
+import { AuthParams, AuthToken } from "../models/models";
 
 
 export interface authentication {
-    auth(params: authParams): Promise<authToken>; 
+    auth(params: AuthParams): Promise<AuthToken>; 
 }
