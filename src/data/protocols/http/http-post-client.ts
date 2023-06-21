@@ -1,5 +1,4 @@
-import { AuthParams } from "@/domain/models/auth-models"
-import { HttpResponse } from "@/data/protocols/http/http-response"
+import { HttpResponse } from "."
 
 export type PostParams<T> = {
     url: string
