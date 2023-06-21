@@ -1,12 +1,16 @@
-import { HttpPostClient, PostParams } from "data/protocols/http/http-post-client"
-import { AuthParams } from "domain/usecases/models/models"
+import { HttpPostClient, PostParams } from "@/data/protocols/http/http-post-client"
+import { HttpResponse, HttpStatusCode } from "@/data/protocols/http/http-response"
+import { AuthParams } from "@/domain/usecases/models/models"
 
 export class HttpPostClientSpy implements HttpPostClient {
     url?: string
     body?: AuthParams
-    post(params: PostParams): Promise<void> {
+    response: HttpResponse = {
+        StatusCode: HttpStatusCode.noContent
+    }
+    post(params: PostParams): Promise<HttpResponse> {
         this.url = params.url
         this.body = params.body
-        return Promise.resolve()
+        return Promise.resolve(this.response)
     }
 }
