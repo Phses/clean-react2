@@ -61,4 +61,17 @@ describe("Teste remoteAutentication", () => {
         const promise = sut.auth(authParams)
         await expect(promise).rejects.toThrow(new UnexpectedError())
     })
+    test("Deve retornar AuthToken em caso de statusCode 200", async () => {
+        const {sut, httpPostClient} = makeSut()
+        const bodyResponse = {
+            token: faker.string.uuid()
+        }
+        httpPostClient.response = {
+            StatusCode: HttpStatusCode.ok,
+            Body: bodyResponse
+        }
+        const authParams = mockAuthParams()
+        const authToken = await sut.auth(authParams)
+        expect(authToken).toEqual(bodyResponse)
+    })
 })
