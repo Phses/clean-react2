@@ -1,4 +1,4 @@
-import { AuthParams } from "@/domain/usecases/models/models"
+import { AuthParams } from "@/domain/models/auth-models"
 import { HttpResponse } from "@/data/protocols/http/http-response"
 
 export type PostParams<T> = {

@@ -1,4 +1,4 @@
-import { AuthParams, AuthToken } from "@/domain/usecases/models/models";
+import { AuthParams, AuthToken } from "@/domain/models/auth-models";
 
 
 export interface authentication {

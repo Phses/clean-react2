@@ -1,6 +1,6 @@
 import { HttpPostClient, PostParams } from "@/data/protocols/http/http-post-client"
 import { HttpResponse, HttpStatusCode } from "@/data/protocols/http/http-response"
-import { AuthParams } from "@/domain/usecases/models/models"
+import { AuthParams } from "@/domain/models/auth-models"
 
 export class HttpPostClientSpy<T,R> implements HttpPostClient<T, R> {
     url?: string

@@ -5,7 +5,7 @@ import { HttpStatusCode } from "@/data/protocols/http/http-response";
 import { InvalidCredentialsError } from "@/domain/erros/invalid-credential-error";
 import { faker } from '@faker-js/faker';
 import { UnexpectedError } from "@/domain/erros/unexpected-error";
-import { AuthParams, AuthToken } from "@/domain/usecases/models/models";
+import { AuthParams, AuthToken } from "@/domain/models/auth-models";
 
 type sutTypes = {
     httpPostClient: HttpPostClientSpy<AuthParams, AuthToken>
