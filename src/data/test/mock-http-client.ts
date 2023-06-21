@@ -6,7 +6,7 @@ export class HttpPostClientSpy implements HttpPostClient {
     url?: string
     body?: AuthParams
     response: HttpResponse = {
-        StatusCode: HttpStatusCode.noContent
+        StatusCode: HttpStatusCode.ok
     }
     post(params: PostParams): Promise<HttpResponse> {
         this.url = params.url
