@@ -1,12 +1,11 @@
-@import '../../styles/global.scss';
-
+@import '../../styles/colors.scss';
 
 .header {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    background-color: #560027;
+    background-color: $primaryDark;
     h1 {
         color: $white;
         margin-top: 16px;

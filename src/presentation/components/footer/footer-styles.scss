@@ -1,7 +1,6 @@
-@import '../../styles/global.scss';
+@import '../../styles/colors.scss';
 
-        
 .footer {
-    background-color: #560027;
+    background-color: $primaryDark;
     height: 40px;
 }
