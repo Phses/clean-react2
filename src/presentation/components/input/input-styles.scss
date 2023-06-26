@@ -5,9 +5,13 @@
     justify-content: center;
     margin-top: 16px;
 
+    label {
+        display: none;
+    }
+
     input {
         padding: 8px 40px 8px 8px;
-    } 
+    }
 
     .inputStatus {
         position: absolute;
