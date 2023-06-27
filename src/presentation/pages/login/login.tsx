@@ -35,7 +35,7 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
                     <h2>Login</h2>
                     <Input type="email" name="email" id="email" placeholder="Digite seu email" />
                     <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
-                    <button type="submit" disabled className={Styles.submit}>Entrar</button>
+                    <button type="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit}>Entrar</button>
                     <span className={Styles.link}><a href="#">Faça seu cadastro</a></span>
                     <FormStatus />
                 </form>
