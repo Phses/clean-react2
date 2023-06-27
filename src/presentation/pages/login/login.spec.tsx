@@ -3,6 +3,7 @@ import { fireEvent, render, RenderResult } from "@testing-library/react"
 import Login  from "./login"
 import { ValidationSpy } from "@/presentation/test/login/validation-mock"
 import { faker } from "@faker-js/faker"
+import exp from "constants"
 
 type sutTypes = {
     sut: RenderResult,
@@ -79,6 +80,17 @@ describe('Login testes', () => {
         fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
         const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
         expect(button.disabled).toBe(false)
+    })
+    test('Deve mostrar spinner apos o clique em submit', () => {
+        const { sut } = makeSut()
+        const passwordInput = sut.getByLabelText('password')
+        fireEvent.input(passwordInput, {target: {value: faker.internet.password()}})
+        const emailInput = sut.getByLabelText('email')
+        fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
+        const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
+        fireEvent.click(button)
+        const spinner = sut.getByTestId('spinner')
+        expect(spinner).toBeTruthy()
     })
 })
 

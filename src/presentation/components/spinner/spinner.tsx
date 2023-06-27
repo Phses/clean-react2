@@ -8,7 +8,7 @@ interface SpinnerProps extends React.HTMLAttributes<HTMLElement> {
     const { className, ...restProps } = props;
   
     return (
-      <div {...restProps} className={[Styles.spinnerRing, className].join(' ')}>
+      <div {...restProps} data-testid='spinner' className={[Styles.spinnerRing, className].join(' ')}>
         <div></div>
         <div></div>
         <div></div>
