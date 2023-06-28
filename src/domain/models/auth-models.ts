@@ -1,6 +1,6 @@
 export type AuthParams = {
     email: string
-    senha: string
+    password: string
 }
 
 export type AuthToken = {

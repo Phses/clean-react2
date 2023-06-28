@@ -3,24 +3,35 @@ import { fireEvent, render, RenderResult } from "@testing-library/react"
 import Login  from "./login"
 import { ValidationSpy } from "@/presentation/test/login/validation-mock"
 import { faker } from "@faker-js/faker"
-import exp from "constants"
+import { Authentication } from "@/domain/usecases/authentication"
+import { AuthParams, AuthToken } from "@/domain/models"
 
 type sutTypes = {
     sut: RenderResult,
-    validationSpy: ValidationSpy
+    authenticationSpy: AuthenticationSpy
 }
 
 type sutProps = {
     validationError: string
 }
 
+class AuthenticationSpy implements Authentication {
+    authToken:AuthToken = { token: faker.string.uuid() }
+    params: AuthParams
+    auth(params: AuthParams): Promise<AuthToken> {
+        this.params = params
+        return Promise.resolve(this.authToken)
+    }
+}
+
 const makeSut  = (props?: sutProps): sutTypes => {
     const validationSpy = new ValidationSpy()
     validationSpy.errorMassage = props?.validationError
-    const sut = render(<Login validation={ validationSpy } />)
+    const authenticationSpy = new AuthenticationSpy()
+    const sut = render(<Login validation={ validationSpy } authentication={ authenticationSpy } />)
     return {
         sut,
-        validationSpy
+        authenticationSpy
     }
 }
 
@@ -91,6 +102,21 @@ describe('Login testes', () => {
         fireEvent.click(button)
         const spinner = sut.getByTestId('spinner')
         expect(spinner).toBeTruthy()
+    })
+    test('Deve chamar authentication com valores corretos', () => {
+        const { sut, authenticationSpy } = makeSut()
+        const passwordInput = sut.getByLabelText('password')
+        const password = faker.internet.password()
+        fireEvent.input(passwordInput, {target: {value: password}})
+        const emailInput = sut.getByLabelText('email')
+        const email = faker.internet.email()
+        fireEvent.input(emailInput, {target: {value: email}})
+        const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
+        fireEvent.click(button)
+        expect(authenticationSpy.params).toEqual({
+            email,
+            password
+        })
     })
 })
 
