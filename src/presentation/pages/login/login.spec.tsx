@@ -24,6 +24,7 @@ class AuthenticationSpy implements Authentication {
     }
 }
 
+
 const makeSut  = (props?: sutProps): sutTypes => {
     const validationSpy = new ValidationSpy()
     validationSpy.errorMassage = props?.validationError
@@ -33,6 +34,23 @@ const makeSut  = (props?: sutProps): sutTypes => {
         sut,
         authenticationSpy
     }
+}
+
+const simulaSubmitComCamposPreenchidos = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => {
+    preencheCampoEmail(sut, email)
+    preencheCampoPassword(sut, password)
+    const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
+    fireEvent.click(button)
+}
+
+const preencheCampoEmail = (sut: RenderResult, email = faker.internet.email()) => {
+    const emailInput = sut.getByLabelText('email')
+    fireEvent.input(emailInput, {target: {value: email}})
+}
+
+const preencheCampoPassword = (sut: RenderResult, password = faker.internet.password()) => {
+    const passwordInput = sut.getByLabelText('password')
+    fireEvent.input(passwordInput, {target: {value: password}})
 }
 
 describe('Login testes', () => {
@@ -52,67 +70,66 @@ describe('Login testes', () => {
     test('Deve setar valor do input status com o erro do validation password', () => {
         const validationErro = faker.word.words()
         const { sut } = makeSut({validationError: validationErro})
-        const passwordInput = sut.getByLabelText('password')
         const inputStatus = sut.getByTestId('password-status')
-        fireEvent.input(passwordInput, {target: {value: faker.internet.password()}})
+        
+        preencheCampoPassword(sut)
+
         expect(inputStatus.title).toBe(validationErro)
         expect(inputStatus.textContent).toBe(`&#10060`)
     })
     test('Deve setar valor do input status com o erro do validation email', () => {
         const validationErro = faker.word.words()
         const { sut } = makeSut({validationError: validationErro})
-        const emailInput = sut.getByLabelText('email')
         const inputStatus = sut.getByTestId('email-status')
-        fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
+        
+        preencheCampoEmail(sut)
+        
         expect(inputStatus.title).toBe(validationErro)
         expect(inputStatus.textContent).toBe('&#10060')
     })
     test('Deve setar valor do input status como vazio e mostrar sucesso email', () => {
         const { sut } = makeSut()
-        const emailInput = sut.getByLabelText('email')
         const inputStatus = sut.getByTestId('email-status')
-        fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
+        
+        preencheCampoEmail(sut)
+
         expect(inputStatus.title).toBe('')
         expect(inputStatus.textContent).toBe('&#9989')
     })
     test('Deve setar valor do input status como vazio e mostrar sucesso password', () => {
         const { sut } = makeSut()
-        const passwordInput = sut.getByLabelText('password')
         const inputStatus = sut.getByTestId('password-status')
-        fireEvent.input(passwordInput, {target: {value: faker.internet.password()}})
+
+        preencheCampoPassword(sut)
+
         expect(inputStatus.title).toBe('')
         expect(inputStatus.textContent).toBe('&#9989')
     })
     test('Deve habilitar botao em caso de validate nao retornar erro', () => {
         const { sut } = makeSut()
-        const passwordInput = sut.getByLabelText('password')
-        fireEvent.input(passwordInput, {target: {value: faker.internet.password()}})
-        const emailInput = sut.getByLabelText('email')
-        fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
+        
+        preencheCampoEmail(sut)
+        preencheCampoPassword(sut)
+
         const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
         expect(button.disabled).toBe(false)
     })
     test('Deve mostrar spinner apos o clique em submit', () => {
         const { sut } = makeSut()
-        const passwordInput = sut.getByLabelText('password')
-        fireEvent.input(passwordInput, {target: {value: faker.internet.password()}})
-        const emailInput = sut.getByLabelText('email')
-        fireEvent.input(emailInput, {target: {value: faker.internet.email()}})
-        const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
-        fireEvent.click(button)
+        
+        simulaSubmitComCamposPreenchidos(sut)
+
         const spinner = sut.getByTestId('spinner')
         expect(spinner).toBeTruthy()
     })
     test('Deve chamar authentication com valores corretos', () => {
         const { sut, authenticationSpy } = makeSut()
-        const passwordInput = sut.getByLabelText('password')
-        const password = faker.internet.password()
-        fireEvent.input(passwordInput, {target: {value: password}})
-        const emailInput = sut.getByLabelText('email')
+        
         const email = faker.internet.email()
-        fireEvent.input(emailInput, {target: {value: email}})
-        const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement;
-        fireEvent.click(button)
+        const password = faker.internet.password()
+
+        simulaSubmitComCamposPreenchidos(sut, email, password)
+        
         expect(authenticationSpy.params).toEqual({
             email,
             password
