@@ -1,14 +1,19 @@
 import React from "react"
-import { fireEvent, render, RenderResult } from "@testing-library/react"
+import { cleanup, fireEvent, render, RenderResult, waitFor } from "@testing-library/react"
 import Login  from "./login"
+import { createMemoryHistory, MemoryHistory } from "history"
+import 'jest-localstorage-mock'
 import { ValidationSpy } from "@/presentation/test/login/validation-mock"
 import { faker } from "@faker-js/faker"
 import { Authentication } from "@/domain/usecases/authentication"
 import { AuthParams, AuthToken } from "@/domain/models"
+import { InvalidCredentialsError } from "@/domain/erros"
+import { Router } from "react-router-dom"
 
 type sutTypes = {
     sut: RenderResult,
-    authenticationSpy: AuthenticationSpy
+    authenticationSpy: AuthenticationSpy,
+    history: MemoryHistory
 }
 
 type sutProps = {
@@ -18,21 +23,29 @@ type sutProps = {
 class AuthenticationSpy implements Authentication {
     authToken:AuthToken = { token: faker.string.uuid() }
     params: AuthParams
+    count: number = 0
     auth(params: AuthParams): Promise<AuthToken> {
         this.params = params
+        this.count++
         return Promise.resolve(this.authToken)
     }
 }
 
 
 const makeSut  = (props?: sutProps): sutTypes => {
+    const history = createMemoryHistory({ initialEntries: ['/login'] })
     const validationSpy = new ValidationSpy()
     validationSpy.errorMassage = props?.validationError
     const authenticationSpy = new AuthenticationSpy()
-    const sut = render(<Login validation={ validationSpy } authentication={ authenticationSpy } />)
+    const sut = render(
+        <Router location={history.location} navigator={history}>
+            <Login validation={ validationSpy } authentication={ authenticationSpy } />
+        </Router>
+    )
     return {
         sut,
-        authenticationSpy
+        authenticationSpy,
+        history
     }
 }
 
@@ -54,6 +67,12 @@ const preencheCampoPassword = (sut: RenderResult, password = faker.internet.pass
 }
 
 describe('Login testes', () => {
+    afterEach(() => {
+        cleanup()
+      })
+    beforeEach(() => {
+        localStorage.clear()
+    })
     test('Deve iniciar a tela com estado inicial', () => {
         const validationErro = "Campo Obrigatório"
         const { sut } = makeSut({validationError: validationErro});
@@ -134,6 +153,58 @@ describe('Login testes', () => {
             email,
             password
         })
+    })
+    test('Deve chamar authentication apenas uma vez enquanto isLoading', () => {
+        const { sut, authenticationSpy } = makeSut()
+        
+        simulaSubmitComCamposPreenchidos(sut)
+        simulaSubmitComCamposPreenchidos(sut)
+
+        expect(authenticationSpy.count).toBe(1)
+    })
+    test('Nao deve chamar authentication caso exista erro no form', () => {
+        const validationErro = faker.word.words()
+        const { sut, authenticationSpy } = makeSut({validationError: validationErro})
+
+        preencheCampoEmail(sut)
+
+        const form = sut.getByTestId('form') as HTMLFormElement
+
+        fireEvent.submit(form)
+
+        expect(authenticationSpy.count).toBe(0)
+
+    })
+    test('Deve mostrar main error em caso de excecao e esconder spinner', async () => {
+        const { sut, authenticationSpy } = makeSut()
+        const error = new InvalidCredentialsError()
+        jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
+
+        simulaSubmitComCamposPreenchidos(sut)
+        const formStatus = sut.getByTestId('form-status')
+        await waitFor(() => formStatus)
+        const mainError = sut.getByTestId('main-error')
+        expect(formStatus.childElementCount).toBe(1);
+        expect(mainError.textContent).toBe(error.message)
+    })
+    test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {
+        const { sut, authenticationSpy, history } = makeSut()
+        
+        simulaSubmitComCamposPreenchidos(sut)
+
+        await waitFor(() => sut.getByTestId('form'))
+
+        expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.authToken.token)
+        expect(history.location.pathname).toBe('/')
+        expect(history.index).toBe(0)
+    })
+    test('Deve navegar para pagina de cadastro', () => {
+        const { sut, history } = makeSut()
+
+        const signup = sut.getByTestId('signup')
+        fireEvent.click(signup)
+        expect(history.location.pathname).toBe('/signup')
+        expect(history.index).toBe(1)
     })
 })
 

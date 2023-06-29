@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Styles from "./login-styles.scss"
 import Context from "../../context/form-context"
 import { Footer, Input, LoginHeader, FormStatus } from "@/presentation/components/";
@@ -11,6 +12,7 @@ type Props = {
 }
 
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+    const navigate = useNavigate()
     const [state, setState] = useState({
         isLoading: false,
         email: '',
@@ -34,21 +36,35 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
             ...state,
             isLoading: true
         })
-        await authentication.auth({
-            email: state.email,
-            password: state.password
-        })
+        if(state.isLoading || state.emailError || state.passwordError) {
+            return
+        }
+        try {
+          const accessToken =  await authentication.auth({
+                email: state.email,
+                password: state.password
+            })
+            localStorage.setItem('accessToken', accessToken.token)
+            navigate('/', { replace: true })
+        } catch (error) {
+            setState({
+                ...state,
+                isLoading: false,
+                mainError: error.message
+            })
+        }
+        
     }
     return(
         <div className={Styles.login}>
             <LoginHeader />
             <Context.Provider value={{state, setState}}>
-                <form className={Styles.form} onSubmit={handleSubmit}>
+                <form data-testid='form' className={Styles.form} onSubmit={handleSubmit}>
                     <h2>Login</h2>
                     <Input type="email" name="email" id="email" placeholder="Digite seu email" />
                     <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
                     <button type="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit}>Entrar</button>
-                    <span className={Styles.link}><a href="#">Faça seu cadastro</a></span>
+                    <span data-testid="signup" className={Styles.link} onClick={() => navigate('/signup')}>Faça seu cadastro</span>
                     <FormStatus />
                 </form>
             </Context.Provider>
