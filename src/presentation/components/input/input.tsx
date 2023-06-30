@@ -15,7 +15,7 @@ const Input: React.FC<Props> = (props: Props) => {
         })
     }
     const getStatusContent = (): string => {
-        return value ? "&#10060" : '&#9989'
+        return value ? "❌" : '✅'
     }
     return (
         <div className={Styles.inputWrapper}>

@@ -94,7 +94,7 @@ describe('Login testes', () => {
         preencheCampoPassword(sut)
 
         expect(inputStatus.title).toBe(validationErro)
-        expect(inputStatus.textContent).toBe(`&#10060`)
+        expect(inputStatus.textContent).toBe(`❌`)
     })
     test('Deve setar valor do input status com o erro do validation email', () => {
         const validationErro = faker.word.words()
@@ -104,7 +104,7 @@ describe('Login testes', () => {
         preencheCampoEmail(sut)
         
         expect(inputStatus.title).toBe(validationErro)
-        expect(inputStatus.textContent).toBe('&#10060')
+        expect(inputStatus.textContent).toBe('❌')
     })
     test('Deve setar valor do input status como vazio e mostrar sucesso email', () => {
         const { sut } = makeSut()
@@ -113,7 +113,7 @@ describe('Login testes', () => {
         preencheCampoEmail(sut)
 
         expect(inputStatus.title).toBe('')
-        expect(inputStatus.textContent).toBe('&#9989')
+        expect(inputStatus.textContent).toBe('✅')
     })
     test('Deve setar valor do input status como vazio e mostrar sucesso password', () => {
         const { sut } = makeSut()
@@ -122,7 +122,7 @@ describe('Login testes', () => {
         preencheCampoPassword(sut)
 
         expect(inputStatus.title).toBe('')
-        expect(inputStatus.textContent).toBe('&#9989')
+        expect(inputStatus.textContent).toBe('✅')
     })
     test('Deve habilitar botao em caso de validate nao retornar erro', () => {
         const { sut } = makeSut()
