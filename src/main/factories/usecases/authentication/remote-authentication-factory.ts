@@ -3,6 +3,6 @@ import { makeHttpClient } from "../../http/http-client-factory";
 import { Authentication } from "@/domain/usecases/authentication";
 
 export const makeRemoteAuthentication = (): Authentication => {
-    const url = 'http://localhost:5050/api/login'
+    const url = makeUrl('/login')
     return new RemoteAuthentication(url, makeHttpClient())
 }
