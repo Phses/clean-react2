@@ -7,7 +7,7 @@ describe('Teste validation Composit', () => {
         const fieldValidationSut2 = new FieldValidationSpy('any_field')
         fieldValidationSut1.error = new Error('first-error')
         fieldValidationSut2.error = new Error('second_error')
-        const sut = new ValidationComposite([fieldValidationSut1, fieldValidationSut2])
+        const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
         const error = sut.validate('any_field', 'any_value')
 
@@ -17,7 +17,7 @@ describe('Teste validation Composit', () => {
         const fieldValidationSut1 = new FieldValidationSpy('any_field')
         const fieldValidationSut2 = new FieldValidationSpy('other_field')
         fieldValidationSut2.error = new Error('any-error')
-        const sut = new ValidationComposite([fieldValidationSut1, fieldValidationSut2])
+        const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
         const error = sut.validate('any_field', 'any_value')
 
@@ -27,7 +27,7 @@ describe('Teste validation Composit', () => {
         const fieldValidationSut1 = new FieldValidationSpy('any_field')
         const fieldValidationSut2 = new FieldValidationSpy('any_field')
    
-        const sut = new ValidationComposite([fieldValidationSut1, fieldValidationSut2])
+        const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
         const error = sut.validate('any_field', 'any_value')
 
