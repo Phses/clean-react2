@@ -1,10 +1,6 @@
 import { faker } from "@faker-js/faker"
-import { FieldValidation } from "../protocols"
 import { EmailFieldValidation } from "./email-field-validation"
 import { EmailInvalidError } from "../errors"
-
-
-
 
 
 
