@@ -1,6 +1,6 @@
 import { AxiosHttpClient } from './http-axios-client'
 import { PostParams } from '@/data/protocols/http'
-import { getMockedAxios } from '../test/http/'
+import { getMockedAxios, mockResponse } from '../test/http/'
 import { faker } from '@faker-js/faker'
 import axios from 'axios'
 
@@ -37,6 +37,14 @@ describe("axios client testes", () => {
     })
     test("Deve retornar HttpResponse", async () => {
         const {sut, mockedAxios} = makeSut()
+        const promise = sut.post(getParams())
+        expect(promise).toEqual(mockedAxios.post.mock.results[0].value)
+    })
+    test("Deve retornar HttpResponse em caso de erro", async () => {
+        const {sut, mockedAxios} = makeSut()
+        mockedAxios.post.mockRejectedValueOnce({
+            response: mockResponse()
+        })
         const promise = sut.post(getParams())
         expect(promise).toEqual(mockedAxios.post.mock.results[0].value)
     })
