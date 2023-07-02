@@ -5,13 +5,15 @@ import Context from "../../context/form-context"
 import { Footer, Input, LoginHeader, FormStatus } from "@/presentation/components/";
 import { Validation } from "@/presentation/protocols/validation";
 import { Authentication } from "@/domain/usecases/authentication";
+import { AccessTokenStorage } from "@/domain/usecases/local-storage/local-store-token";
 
 type Props = {
     validation: Validation
     authentication: Authentication
+    storgeAccessToken: AccessTokenStorage
 }
 
-const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken }: Props) => {
     const navigate = useNavigate()
     const [state, setState] = useState({
         isLoading: false,
@@ -44,7 +46,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
                 email: state.email,
                 password: state.password
             })
-            localStorage.setItem('accessToken', accessToken.token)
+            storgeAccessToken.save(accessToken.token)
             navigate('/', { replace: true })
         } catch (error) {
             setState({

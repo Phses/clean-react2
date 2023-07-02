@@ -9,11 +9,13 @@ import { Authentication } from "@/domain/usecases/authentication"
 import { AuthParams, AuthToken } from "@/domain/models"
 import { InvalidCredentialsError } from "@/domain/erros"
 import { Router } from "react-router-dom"
+import { LocalStorageAccessTokenMock } from "@/presentation/test/login/local-storage-accessToken-mock"
 
 type sutTypes = {
     sut: RenderResult,
     authenticationSpy: AuthenticationSpy,
-    history: MemoryHistory
+    history: MemoryHistory,
+    localStorageAccessToken: LocalStorageAccessTokenMock
 }
 
 type sutProps = {
@@ -37,15 +39,21 @@ const makeSut  = (props?: sutProps): sutTypes => {
     const validationSpy = new ValidationSpy()
     validationSpy.errorMassage = props?.validationError
     const authenticationSpy = new AuthenticationSpy()
+    const localStorageAccessToken = new LocalStorageAccessTokenMock()
     const sut = render(
         <Router location={history.location} navigator={history}>
-            <Login validation={ validationSpy } authentication={ authenticationSpy } />
+            <Login 
+            validation={ validationSpy } 
+            authentication={ authenticationSpy } 
+            storgeAccessToken= { localStorageAccessToken }
+            />
         </Router>
     )
     return {
         sut,
         authenticationSpy,
-        history
+        history,
+        localStorageAccessToken
     }
 }
 
@@ -70,9 +78,6 @@ describe('Login testes', () => {
     afterEach(() => {
         cleanup()
       })
-    beforeEach(() => {
-        localStorage.clear()
-    })
     test('Deve iniciar a tela com estado inicial', () => {
         const validationErro = "Campo Obrigatório"
         const { sut } = makeSut({validationError: validationErro});
@@ -188,13 +193,13 @@ describe('Login testes', () => {
         expect(mainError.textContent).toBe(error.message)
     })
     test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {
-        const { sut, authenticationSpy, history } = makeSut()
+        const { sut, authenticationSpy, history, localStorageAccessToken } = makeSut()
         
         simulaSubmitComCamposPreenchidos(sut)
 
         await waitFor(() => sut.getByTestId('form'))
 
-        expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.authToken.token)
+        expect(localStorageAccessToken.accessToken).toBe(authenticationSpy.authToken.token)
         expect(history.location.pathname).toBe('/')
         expect(history.index).toBe(0)
     })

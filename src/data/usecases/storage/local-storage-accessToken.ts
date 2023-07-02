@@ -3,7 +3,7 @@ import { AccessTokenStorage } from "@/domain/usecases/local-storage/local-store-
 
 export class AccessTokenLocalStorage implements AccessTokenStorage {
     constructor(private setStorage: SetStorage) {}
-    save(accessToken: string): Promise<void> {
+    async save(accessToken: string): Promise<void> {
         this.setStorage.set('accessToken', accessToken)
         return Promise.resolve()
     }
