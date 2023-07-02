@@ -2,7 +2,7 @@
 import { HttpPostClient, HttpStatusCode } from "@/data/protocols/http"
 import { UnexpectedError } from "@/domain/erros"
 import { EmailInUseError } from "@/domain/erros/email-in-use-error"
-import { AccountParams, AuthParams, AuthToken } from "@/domain/models"
+import { AccountParams, AuthToken } from "@/domain/models"
 
 
 export class RemoteAddAccount {

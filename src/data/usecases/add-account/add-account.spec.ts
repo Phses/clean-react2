@@ -1,5 +1,5 @@
-import { InvalidCredentialsError, UnexpectedError } from "@/domain/erros/";
-import { AccountParams, AuthParams, AuthToken } from "@/domain/models/";
+import { UnexpectedError } from "@/domain/erros/";
+import { AccountParams, AuthToken } from "@/domain/models/";
 import { HttpStatusCode } from "@/data/protocols/http/";
 import { HttpPostClientSpy } from "@/data/test/"
 import { faker } from '@faker-js/faker';
