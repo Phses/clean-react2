@@ -8,12 +8,12 @@ type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(Context)
-  const value = state[`${props.type}Error`]
+  const value = state[`${props.name}Error`]
 
   const handleChange = (event: React.FocusEvent<HTMLInputElement>) => {
     setState({
       ...state,
-      [props.type]: event.target.value
+      [props.name]: event.target.value
     })
   }
   const getStatusContent = (): string => {
@@ -21,9 +21,9 @@ const Input: React.FC<Props> = (props: Props) => {
   }
   return (
     <div className={Styles.inputWrapper}>
-      <label htmlFor={props.type}>{props.type}</label>
+      <label htmlFor={props.name}>{props.name}</label>
       <input {...props} onChange={handleChange} />
-      <span data-testid={`${props.type}-status`} title={value} className={Styles.inputStatus}>{getStatusContent()}</span>
+      <span data-testid={`${props.name}-status`} title={value} className={Styles.inputStatus}>{getStatusContent()}</span>
     </div>
   )
 }

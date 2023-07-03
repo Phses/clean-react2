@@ -5,11 +5,11 @@ import { createMemoryHistory, type MemoryHistory } from 'history'
 import 'jest-localstorage-mock'
 import { ValidationSpy } from '@/presentation/test/login/validation-mock'
 import { faker } from '@faker-js/faker'
-import { type Authentication } from '@/domain/usecases/authentication'
-import { type AuthParams, type AuthToken } from '@/domain/models'
 import { InvalidCredentialsError } from '@/domain/erros'
 import { Router } from 'react-router-dom'
 import { LocalStorageAccessTokenMock } from '@/presentation/test/login/local-storage-accessToken-mock'
+import { AuthenticationSpy } from '@/domain/test/authentication-spy'
+import { Helper } from '@/presentation/test'
 
 type sutTypes = {
   sut: RenderResult
@@ -20,17 +20,6 @@ type sutTypes = {
 
 type sutProps = {
   validationError: string
-}
-
-class AuthenticationSpy implements Authentication {
-  authToken: AuthToken = { token: faker.string.uuid() }
-  params: AuthParams
-  count: number = 0
-  async auth(params: AuthParams): Promise<AuthToken> {
-    this.params = params
-    this.count++
-    return await Promise.resolve(this.authToken)
-  }
 }
 
 const makeSut = (props?: sutProps): sutTypes => {
@@ -57,36 +46,10 @@ const makeSut = (props?: sutProps): sutTypes => {
 }
 
 const simulaSubmitComCamposPreenchidos = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => {
-  preencheCampoEmail(sut, email)
-  preencheCampoPassword(sut, password)
+  Helper.preencheCampo(sut, 'email', email)
+  Helper.preencheCampo(sut, 'password', password)
   const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement
   fireEvent.click(button)
-}
-
-const preencheCampoEmail = (sut: RenderResult, email = faker.internet.email()): void => {
-  const emailInput = sut.getByLabelText('email')
-  fireEvent.input(emailInput, { target: { value: email } })
-}
-
-const preencheCampoPassword = (sut: RenderResult, password = faker.internet.password()): void => {
-  const passwordInput = sut.getByLabelText('password')
-  fireEvent.input(passwordInput, { target: { value: password } })
-}
-
-const verificaNumeroDeFilhos = (sut: RenderResult, testId: string, numChilds: number): void => {
-  const formStatus = sut.getByTestId(testId)
-  expect(formStatus.childElementCount).toBe(numChilds)
-}
-
-const verifcaFieldError = (sut: RenderResult, fieldTestId: string, fieldError: string = faker.lorem.words()): void => {
-  const fieldStatus = sut.getByTestId(fieldTestId)
-  expect(fieldStatus.title).toBe(fieldError)
-}
-
-const verificaFieldStatus = (sut: RenderResult, fieldTestId: string, textContent: string, fieldError: string = ''): void => {
-  const inputStatus = sut.getByTestId(fieldTestId)
-  expect(inputStatus.title).toBe(fieldError)
-  expect(inputStatus.textContent).toBe(textContent)
 }
 
 describe('Login testes', () => {
@@ -96,45 +59,45 @@ describe('Login testes', () => {
   test('Deve iniciar a tela com estado inicial', () => {
     const validationErro = 'Campo Obrigatório'
     const { sut } = makeSut({ validationError: validationErro })
-    verificaNumeroDeFilhos(sut, 'form-status', 0)
+    Helper.verificaNumeroDeFilhos(sut, 'form-status', 0)
     const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement
     expect(button.disabled).toBe(true)
-    verifcaFieldError(sut, 'email-status', validationErro)
-    verifcaFieldError(sut, 'password-status', validationErro)
+    Helper.verifcaFieldError(sut, 'email-status', validationErro)
+    Helper.verifcaFieldError(sut, 'password-status', validationErro)
   })
 
   test('Deve setar valor do input status com o erro do validation password', () => {
     const validationErro = faker.word.words()
     const { sut } = makeSut({ validationError: validationErro })
 
-    preencheCampoPassword(sut)
-    verificaFieldStatus(sut, 'password-status', '❌', validationErro)
+    Helper.preencheCampo(sut, 'password')
+    Helper.verificaFieldStatus(sut, 'password-status', '❌', validationErro)
   })
   test('Deve setar valor do input status com o erro do validation email', () => {
     const validationErro = faker.word.words()
     const { sut } = makeSut({ validationError: validationErro })
 
-    preencheCampoEmail(sut)
-    verificaFieldStatus(sut, 'email-status', '❌', validationErro)
+    Helper.preencheCampo(sut, 'email')
+    Helper.verificaFieldStatus(sut, 'email-status', '❌', validationErro)
   })
   test('Deve setar valor do input status como vazio e mostrar sucesso email', () => {
     const { sut } = makeSut()
 
-    preencheCampoEmail(sut)
-    verificaFieldStatus(sut, 'email-status', '✅')
+    Helper.preencheCampo(sut, 'email')
+    Helper.verificaFieldStatus(sut, 'email-status', '✅')
   })
   test('Deve setar valor do input status como vazio e mostrar sucesso password', () => {
     const { sut } = makeSut()
 
-    preencheCampoPassword(sut)
+    Helper.preencheCampo(sut, 'password')
 
-    verificaFieldStatus(sut, 'password-status', '✅')
+    Helper.verificaFieldStatus(sut, 'password-status', '✅')
   })
   test('Deve habilitar botao em caso de validate nao retornar erro', () => {
     const { sut } = makeSut()
 
-    preencheCampoEmail(sut)
-    preencheCampoPassword(sut)
+    Helper.preencheCampo(sut, 'email')
+    Helper.preencheCampo(sut, 'password')
 
     const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement
     expect(button.disabled).toBe(false)
@@ -172,7 +135,7 @@ describe('Login testes', () => {
     const validationErro = faker.word.words()
     const { sut, authenticationSpy } = makeSut({ validationError: validationErro })
 
-    preencheCampoEmail(sut)
+    Helper.preencheCampo(sut, 'email')
 
     const form = sut.getByTestId('form') as HTMLFormElement
 
@@ -188,7 +151,7 @@ describe('Login testes', () => {
     simulaSubmitComCamposPreenchidos(sut)
     const formStatus = sut.getByTestId('form-status')
     await waitFor(() => formStatus)
-    verificaNumeroDeFilhos(sut, 'form-status', 1)
+    Helper.verificaNumeroDeFilhos(sut, 'form-status', 1)
     const mainError = sut.getByTestId('main-error')
     expect(mainError.textContent).toBe(error.message)
   })
