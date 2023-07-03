@@ -1,8 +1,8 @@
 export type AuthParams = {
-    email: string
-    password: string
+  email: string
+  password: string
 }
 
 export type AuthToken = {
-    token: string
+  token: string
 }

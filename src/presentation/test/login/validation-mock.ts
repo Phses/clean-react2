@@ -1,11 +1,11 @@
-import { Validation } from "@/presentation/protocols/validation"
+import { type Validation } from '@/presentation/protocols/validation'
 
 export class ValidationSpy implements Validation {
-    errorMassage: string
+  errorMassage: string
 
-    validate(inputName: string, inputValue: string): string {
-        return  (
-            this.errorMassage
-        )
-    }
+  validate(inputName: string, inputValue: string): string {
+    return (
+      this.errorMassage
+    )
+  }
 }

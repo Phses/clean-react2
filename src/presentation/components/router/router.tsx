@@ -1,19 +1,18 @@
-import { Login } from '@/presentation/pages'
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 type Props = {
-    MakeLogin: React.FC
+  MakeLogin: React.FC
 }
 
 const Router: React.FC<Props> = ({ MakeLogin }: Props) => {
-    return(
-        <BrowserRouter>
-            <Routes>
-                <Route path='/login' element={<MakeLogin />} />
-            </Routes>
-        </BrowserRouter>
-    )
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/login' element={<MakeLogin />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default Router

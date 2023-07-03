@@ -1,5 +1,5 @@
-import { AuthParams, AuthToken } from "@/domain/models";
+import { type AuthParams, type AuthToken } from '@/domain/models'
 
 export interface Authentication {
-    auth(params: AuthParams): Promise<AuthToken> 
+  auth: (params: AuthParams) => Promise<AuthToken>
 }

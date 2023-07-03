@@ -1,3 +1,3 @@
 export interface Validation {
-    validate(inputName: string, inputValue: string): string
+  validate: (inputName: string, inputValue: string) => string
 }

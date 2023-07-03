@@ -1,1 +1,1 @@
-export * from "./mock-auth-params"
+export * from './mock-auth-params'
