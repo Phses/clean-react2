@@ -73,6 +73,22 @@ const preencheCampoPassword = (sut: RenderResult, password = faker.internet.pass
   fireEvent.input(passwordInput, { target: { value: password } })
 }
 
+const verificaNumeroDeFilhos = (sut: RenderResult, testId: string, numChilds: number): void => {
+  const formStatus = sut.getByTestId(testId)
+  expect(formStatus.childElementCount).toBe(numChilds)
+}
+
+const verifcaFieldError = (sut: RenderResult, fieldTestId: string, fieldError: string = faker.lorem.words()): void => {
+  const fieldStatus = sut.getByTestId(fieldTestId)
+  expect(fieldStatus.title).toBe(fieldError)
+}
+
+const verificaFieldStatus = (sut: RenderResult, fieldTestId: string, textContent: string, fieldError: string = ''): void => {
+  const inputStatus = sut.getByTestId(fieldTestId)
+  expect(inputStatus.title).toBe(fieldError)
+  expect(inputStatus.textContent).toBe(textContent)
+}
+
 describe('Login testes', () => {
   afterEach(() => {
     cleanup()
@@ -80,53 +96,39 @@ describe('Login testes', () => {
   test('Deve iniciar a tela com estado inicial', () => {
     const validationErro = 'Campo Obrigatório'
     const { sut } = makeSut({ validationError: validationErro })
-    const formStatus = sut.getByTestId('form-status')
-    expect(formStatus.childElementCount).toBe(0)
+    verificaNumeroDeFilhos(sut, 'form-status', 0)
     const button = sut.getByRole('button', { name: 'Entrar' }) as HTMLButtonElement
     expect(button.disabled).toBe(true)
-    const emailStatus = sut.getByTestId('email-status')
-    expect(emailStatus.title).toBe(validationErro)
-    const passwordStatus = sut.getByTestId('password-status')
-    expect(passwordStatus.title).toBe(validationErro)
+    verifcaFieldError(sut, 'email-status', validationErro)
+    verifcaFieldError(sut, 'password-status', validationErro)
   })
 
   test('Deve setar valor do input status com o erro do validation password', () => {
     const validationErro = faker.word.words()
     const { sut } = makeSut({ validationError: validationErro })
-    const inputStatus = sut.getByTestId('password-status')
 
     preencheCampoPassword(sut)
-
-    expect(inputStatus.title).toBe(validationErro)
-    expect(inputStatus.textContent).toBe('❌')
+    verificaFieldStatus(sut, 'password-status', '❌', validationErro)
   })
   test('Deve setar valor do input status com o erro do validation email', () => {
     const validationErro = faker.word.words()
     const { sut } = makeSut({ validationError: validationErro })
-    const inputStatus = sut.getByTestId('email-status')
 
     preencheCampoEmail(sut)
-
-    expect(inputStatus.title).toBe(validationErro)
-    expect(inputStatus.textContent).toBe('❌')
+    verificaFieldStatus(sut, 'email-status', '❌', validationErro)
   })
   test('Deve setar valor do input status como vazio e mostrar sucesso email', () => {
     const { sut } = makeSut()
-    const inputStatus = sut.getByTestId('email-status')
 
     preencheCampoEmail(sut)
-
-    expect(inputStatus.title).toBe('')
-    expect(inputStatus.textContent).toBe('✅')
+    verificaFieldStatus(sut, 'email-status', '✅')
   })
   test('Deve setar valor do input status como vazio e mostrar sucesso password', () => {
     const { sut } = makeSut()
-    const inputStatus = sut.getByTestId('password-status')
 
     preencheCampoPassword(sut)
 
-    expect(inputStatus.title).toBe('')
-    expect(inputStatus.textContent).toBe('✅')
+    verificaFieldStatus(sut, 'password-status', '✅')
   })
   test('Deve habilitar botao em caso de validate nao retornar erro', () => {
     const { sut } = makeSut()
@@ -186,8 +188,8 @@ describe('Login testes', () => {
     simulaSubmitComCamposPreenchidos(sut)
     const formStatus = sut.getByTestId('form-status')
     await waitFor(() => formStatus)
+    verificaNumeroDeFilhos(sut, 'form-status', 1)
     const mainError = sut.getByTestId('main-error')
-    expect(formStatus.childElementCount).toBe(1)
     expect(mainError.textContent).toBe(error.message)
   })
   test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {

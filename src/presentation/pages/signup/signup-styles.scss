@@ -1,0 +1,40 @@
+@import '../../styles/colors.scss';
+
+.login {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    
+    .form {
+        background-color: $white;
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        width: 30vw;
+        padding: 30px 60px;
+        position: relative;
+        
+        h2 {
+            text-transform: uppercase;
+            align-self: center;
+            font-size: 18px;
+            color:  $primaryDark;
+        }
+
+        .submit {
+            margin-top: 32px;
+            font-weight: bold;
+            &:disabled {
+                background-color: $disable-background;
+                color: $disable-color;
+            }
+        }
+
+        .link {
+            margin-top: 8px;
+            text-transform: lowercase;
+            align-self: center;
+        }
+    }
+}

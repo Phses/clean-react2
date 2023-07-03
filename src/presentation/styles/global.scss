@@ -1,39 +1,42 @@
 @import './colors.scss';
 
-*{
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: $background;
+  background-color: $background;
 }
 
 a {
-    color: $primaryLight;
-    text-decoration: none;
+  color: $primaryLight;
+  text-decoration: none;
 }
 
 input[type=email],
-input[type=password] {
-   border: 1px solid $primaryLight;
-   border-radius: 6px;
-   &:focus {
+input[type=password],
+input[type=text] {
+  border: 1px solid $primaryLight;
+  border-radius: 6px;
+
+  &:focus {
     outline: 1px solid $primaryDark;
-   }
+  }
 }
 
 button {
-    background-color: $primaryDark;
-    color: $white;
-    border: none;
-    padding: 12px 22px;
-    border-radius: 12px;
-    cursor: pointer;
-    &:hover {
-        background-color: $primaryLight;
-    }
+  background-color: $primaryDark;
+  color: $white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 12px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $primaryLight;
+  }
 }
