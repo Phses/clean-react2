@@ -4,12 +4,14 @@ import Styles from './signup-styles.scss'
 import Context from '../../context/form-context'
 import { Footer, Input, LoginHeader, FormStatus } from '@/presentation/components/'
 import { type Validation } from '@/presentation/protocols/validation'
+import { type AddAccount } from '@/domain/usecases/add-account/add-account'
 
 type Props = {
   validation: Validation
+  addAccount: AddAccount
 }
 
-const SignUp: React.FC<Props> = ({ validation }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
     name: '',
@@ -32,11 +34,24 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
     })
   }, [state.name, state.email, state.password, state.confirmPassword])
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
+    event.preventDefault()
+    setState({
+      ...state,
+      isLoading: true
+    })
+    await addAccount.add({
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      confirmPassword: state.confirmPassword
+    })
+  }
   return (
     <div className={Styles.login}>
       <LoginHeader />
       <Context.Provider value={{ state, setState }}>
-        <form className={Styles.form} >
+        <form className={Styles.form} onSubmit={handleSubmit}>
           <h2>Cadastro</h2>
           <Input type="text" name="name" id="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
