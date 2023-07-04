@@ -1,15 +1,21 @@
 import React from 'react'
-import { type RenderResult, render, fireEvent } from '@testing-library/react'
+import { type RenderResult, render, fireEvent, waitFor } from '@testing-library/react'
 import SignUp from './signup'
 import { faker } from '@faker-js/faker'
 import { ValidationSpy } from '@/presentation/test/login/validation-mock'
 import { Helper } from '@/presentation/test'
 import { type AccountParams, type AuthToken } from '@/domain/models'
 import { type AddAccount } from '@/domain/usecases/add-account/add-account'
+import { EmailInUseError } from '@/domain/erros/email-in-use-error'
+import { type MemoryHistory, createMemoryHistory } from 'history'
+import { Router } from 'react-router-dom'
+import { LocalStorageAccessTokenMock } from '@/presentation/test/login/local-storage-accessToken-mock'
 
 type sutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
+  history: MemoryHistory
+  localStorageAccessToken: LocalStorageAccessTokenMock
 }
 
 type sutProps = {
@@ -22,18 +28,31 @@ class AddAccountSpy implements AddAccount {
   count: number = 0
   async add(params: AccountParams): Promise<AuthToken> {
     this.params = params
+    this.count++
     return await Promise.resolve(this.authToken)
   }
 }
 
 const makeSut = (props?: sutProps): sutTypes => {
+  const history = createMemoryHistory({ initialEntries: ['/login'] })
   const validationSpy = new ValidationSpy()
   validationSpy.errorMassage = props?.validationError
   const addAccountSpy = new AddAccountSpy()
-  const sut = render(<SignUp validation={validationSpy} addAccount={addAccountSpy} />)
+  const localStorageAccessToken = new LocalStorageAccessTokenMock()
+  const sut = render(
+    <Router location={history.location} navigator={history}>
+      <SignUp
+        validation={validationSpy}
+        addAccount={addAccountSpy}
+        storgeAccessToken={localStorageAccessToken}
+      />
+    </Router>
+  )
   return {
     sut,
-    addAccountSpy
+    addAccountSpy,
+    history,
+    localStorageAccessToken
   }
 }
 
@@ -144,5 +163,56 @@ describe('SignUP testes', () => {
       password,
       confirmPassword: password
     })
+  })
+  test('Deve chamar authentication apenas uma vez enquanto isLoading', () => {
+    const { sut, addAccountSpy } = makeSut()
+
+    simulaSubmitComCamposPreenchidos(sut)
+    simulaSubmitComCamposPreenchidos(sut)
+
+    expect(addAccountSpy.count).toBe(1)
+  })
+  test('Nao deve chamar authentication caso exista erro no form', () => {
+    const validationErro = faker.word.words()
+    const { sut, addAccountSpy } = makeSut({ validationError: validationErro })
+
+    Helper.preencheCampo(sut, 'email')
+
+    const form = sut.getByTestId('form') as HTMLFormElement
+
+    fireEvent.submit(form)
+
+    expect(addAccountSpy.count).toBe(0)
+  })
+  test('Deve mostrar main error em caso de excecao e esconder spinner', async () => {
+    const { sut, addAccountSpy } = makeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(addAccountSpy, 'add').mockRejectedValueOnce((error))
+
+    simulaSubmitComCamposPreenchidos(sut)
+    const formStatus = sut.getByTestId('form-status')
+    await waitFor(() => formStatus)
+    Helper.verificaNumeroDeFilhos(sut, 'form-status', 1)
+    const mainError = sut.getByTestId('main-error')
+    expect(mainError.textContent).toBe(error.message)
+  })
+  test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {
+    const { sut, addAccountSpy, history, localStorageAccessToken } = makeSut()
+
+    simulaSubmitComCamposPreenchidos(sut)
+
+    await waitFor(() => sut.getByTestId('form'))
+
+    expect(localStorageAccessToken.accessToken).toBe(addAccountSpy.authToken.token)
+    expect(history.location.pathname).toBe('/')
+    expect(history.index).toBe(0)
+  })
+  test('Deve navegar para pagina de cadastro', () => {
+    const { sut, history } = makeSut()
+
+    const signup = sut.getByTestId('login-link')
+    fireEvent.click(signup)
+    expect(history.location.pathname).toBe('/login')
+    expect(history.index).toBe(1)
   })
 })

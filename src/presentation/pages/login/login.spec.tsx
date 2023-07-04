@@ -169,7 +169,7 @@ describe('Login testes', () => {
   test('Deve navegar para pagina de cadastro', () => {
     const { sut, history } = makeSut()
 
-    const signup = sut.getByTestId('signup')
+    const signup = sut.getByTestId('signup-link')
     fireEvent.click(signup)
     expect(history.location.pathname).toBe('/signup')
     expect(history.index).toBe(1)

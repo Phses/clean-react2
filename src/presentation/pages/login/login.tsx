@@ -47,7 +47,7 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
         email: state.email,
         password: state.password
       })
-      void storgeAccessToken.save(accessToken.token)
+      await storgeAccessToken.save(accessToken.token)
       navigate('/', { replace: true })
     } catch (error) {
       setState({
@@ -66,7 +66,7 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
           <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
           <button type="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit}>Entrar</button>
-          <span data-testid="signup" className={Styles.link} onClick={() => { navigate('/signup') }}>Faça seu cadastro</span>
+          <span data-testid="signup-link" className={Styles.link} onClick={() => { navigate('/signup') }}>Faça seu cadastro</span>
           <FormStatus />
         </form>
       </Context.Provider>
