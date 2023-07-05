@@ -18,6 +18,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     name: '',
     email: '',
     password: '',
@@ -30,18 +31,25 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
   })
 
   useEffect(() => {
+    const { name, email, password, confirmPassword } = state
+    const formData = { name, email, password, confirmPassword }
+    const nameError = validation.validate('name', formData)
+    const emailError = validation.validate('email', formData)
+    const passwordError = validation.validate('password', formData)
+    const confirmPasswordError = validation.validate('confirmPassword', formData)
     setState({
       ...state,
-      nameError: validation.validate('name', state.name),
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password),
-      confirmPasswordError: validation.validate('confirmPassword', state.confirmPassword)
+      nameError,
+      emailError,
+      passwordError,
+      confirmPasswordError,
+      isFormInvalid: !!nameError || !!emailError || !!passwordError || !!confirmPasswordError
     })
   }, [state.name, state.email, state.password, state.confirmPassword])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
     event.preventDefault()
-    if (state.isLoading || state.nameError || state.emailError || state.passwordError || state.confirmPasswordError) {
+    if (state.isLoading || state.isFormInvalid) {
       return
     }
     setState({
@@ -74,7 +82,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
           <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
           <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirme sua senha" />
-          <button type="submit" disabled={!!state.nameError || !!state.emailError || !!state.passwordError || !!state.confirmPasswordError} className={Styles.submit}>Cadastrar</button>
+          <button type="submit" disabled={state.isFormInvalid} className={Styles.submit}>Cadastrar</button>
           <span data-testid='login-link' className={Styles.link} onClick={() => { navigate('/login') }}>Voltar para o login</span>
           <FormStatus />
         </form>

@@ -18,6 +18,7 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     emailError: '',
@@ -26,22 +27,27 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
   })
 
   useEffect(() => {
+    const { email, password } = state
+    const formData = { email, password }
+    const emailError = validation.validate('email', formData)
+    const passwordError = validation.validate('password', formData)
     setState({
       ...state,
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password)
+      emailError,
+      passwordError,
+      isFormInvalid: !!emailError || !!passwordError
     })
   }, [state.email, state.password])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
     event.preventDefault()
+    if (state.isLoading || state.isFormInvalid) {
+      return
+    }
     setState({
       ...state,
       isLoading: true
     })
-    if (state.isLoading || state.emailError || state.passwordError) {
-      return
-    }
     try {
       const accessToken = await authentication.auth({
         email: state.email,
@@ -65,7 +71,7 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
           <h2>Login</h2>
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
           <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
-          <button type="submit" disabled={!!state.emailError || !!state.passwordError} className={Styles.submit}>Entrar</button>
+          <button type="submit" disabled={state.isFormInvalid} className={Styles.submit}>Entrar</button>
           <span data-testid="signup-link" className={Styles.link} onClick={() => { navigate('/signup') }}>Faça seu cadastro</span>
           <FormStatus />
         </form>

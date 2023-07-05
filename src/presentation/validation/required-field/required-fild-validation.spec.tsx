@@ -1,22 +1,25 @@
 import { RequiredFieldError } from '@/presentation/validation/errors/'
 import { RequiredFieldValidation } from './required-field-validation'
 import { faker } from '@faker-js/faker'
-const makeSut = (): RequiredFieldValidation => {
-  return new RequiredFieldValidation('email')
+
+const makeSut = (field: string): RequiredFieldValidation => {
+  return new RequiredFieldValidation(field)
 }
 
 describe('test campo obrigatorio', () => {
   test('Deve retornar erro caso campo nao esteja preenchido', () => {
-    const sut = makeSut()
+    const field = faker.database.column()
+    const sut = makeSut(field)
 
-    const error = sut.validate('')
+    const error = sut.validate({ [field]: '' })
 
     expect(error).toEqual(new RequiredFieldError())
   })
   test('Deve retornar null caso o campo esteja preenchido', () => {
-    const sut = makeSut()
+    const field = faker.database.column()
+    const sut = makeSut(field)
 
-    const error = sut.validate(faker.internet.email())
+    const error = sut.validate({ [field]: faker.internet.email() })
 
     expect(error).toBeFalsy()
   })

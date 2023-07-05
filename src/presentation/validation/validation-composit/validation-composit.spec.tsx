@@ -9,7 +9,7 @@ describe('Teste validation Composit', () => {
     fieldValidationSut2.error = new Error('second_error')
     const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
-    const error = sut.validate('any_field', 'any_value')
+    const error = sut.validate('any_field', { any_field: 'any_value' })
 
     expect(error).toBe('first-error')
   })
@@ -19,17 +19,17 @@ describe('Teste validation Composit', () => {
     fieldValidationSut2.error = new Error('any-error')
     const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
-    const error = sut.validate('any_field', 'any_value')
+    const error = sut.validate('any_field', { any_field: 'any_value' })
 
     expect(error).toBeFalsy()
   })
-  test('Nao deve retonar erro caso os validators nao retornem erro', () => {
+  test('Nao deve retonar null caso os validators nao retornem erro', () => {
     const fieldValidationSut1 = new FieldValidationSpy('any_field')
     const fieldValidationSut2 = new FieldValidationSpy('any_field')
 
     const sut = ValidationComposite.build([fieldValidationSut1, fieldValidationSut2])
 
-    const error = sut.validate('any_field', 'any_value')
+    const error = sut.validate('any_field', { any_field: 'any_value' })
 
     expect(error).toBeFalsy()
   })
