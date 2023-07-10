@@ -1,6 +1,7 @@
 import { UnexpectedError } from '@/domain/erros/'
 import { type AccountParams, type AuthToken } from '@/domain/models/'
 import { HttpStatusCode } from '@/data/protocols/http/'
+import { expect } from '@jest/globals'
 import { HttpPostClientSpy } from '@/data/test/'
 import { faker } from '@faker-js/faker'
 import { mockAccountParams } from '@/domain/test/mock-account-params'

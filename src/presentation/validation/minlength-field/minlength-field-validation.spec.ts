@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { MinLengthValidation } from './minlength-fiel-validation'
+import { expect } from '@jest/globals'
 import { LengthInvalidError } from '../errors'
 
 const makeSut = (field: string): MinLengthValidation => {

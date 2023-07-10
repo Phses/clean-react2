@@ -1,6 +1,7 @@
 import { RemoteAuthentication } from '.'
 import { mockAuthParams } from '@/domain/test/'
 import { InvalidCredentialsError, UnexpectedError } from '@/domain/erros/'
+import { expect } from '@jest/globals'
 import { type AuthParams, type AuthToken } from '@/domain/models/'
 import { HttpStatusCode } from '@/data/protocols/http/'
 import { HttpPostClientSpy } from '@/data/test/'

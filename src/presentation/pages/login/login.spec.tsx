@@ -1,6 +1,7 @@
 import React from 'react'
 import { cleanup, fireEvent, render, type RenderResult, waitFor } from '@testing-library/react'
 import Login from './login'
+import { expect } from '@jest/globals'
 import { createMemoryHistory, type MemoryHistory } from 'history'
 import 'jest-localstorage-mock'
 import { ValidationSpy } from '@/presentation/test/login/validation-mock'

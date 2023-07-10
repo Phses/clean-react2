@@ -1,5 +1,6 @@
 import { RequiredFieldError } from '@/presentation/validation/errors/'
 import { RequiredFieldValidation } from './required-field-validation'
+import { expect } from '@jest/globals'
 import { faker } from '@faker-js/faker'
 
 const makeSut = (field: string): RequiredFieldValidation => {

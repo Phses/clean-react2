@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { EmailFieldValidation } from './email-field-validation'
+import { expect } from '@jest/globals'
 import { EmailInvalidError } from '../errors'
 
 const makeSut = (field: string): EmailFieldValidation => {

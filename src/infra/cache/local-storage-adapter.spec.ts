@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import 'jest-localstorage-mock'
+import { expect } from '@jest/globals'
 import { LocalStorageAdapter } from './local-storage-adapter'
 
 describe('Teste set storage', () => {

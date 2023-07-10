@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { CompareFieldValidation } from './compare-fiels-validation'
+import { expect } from '@jest/globals'
 import { CompareFieldError } from '../errors'
 
 const makeSut = (field: string, fieldToCompare: string): CompareFieldValidation => {

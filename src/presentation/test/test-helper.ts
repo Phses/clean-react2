@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { expect } from '@jest/globals'
 import { type RenderResult, fireEvent } from '@testing-library/react'
 
 export const preencheCampo = (sut: RenderResult, inputType: string, valueField = faker.lorem.words()): void => {

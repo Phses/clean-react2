@@ -1,5 +1,6 @@
 import { FieldValidationSpy } from '../test/mock-field-validation'
 import { ValidationComposite } from './validation-composite'
+import { expect } from '@jest/globals'
 
 describe('Teste validation Composit', () => {
   test('Deve retonar primeiro erro caso algum validate retorne erro', () => {

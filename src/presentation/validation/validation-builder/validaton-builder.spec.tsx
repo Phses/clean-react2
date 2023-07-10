@@ -1,6 +1,7 @@
 import { EmailFieldValidation } from '../email-field/email-field-validation'
 import { MinLengthValidation } from '../minlength-field/minlength-fiel-validation'
 import { RequiredFieldValidation } from '../required-field/required-field-validation'
+import { expect } from '@jest/globals'
 import { ValidationBuilder } from './validation-builder'
 import { faker } from '@faker-js/faker'
 

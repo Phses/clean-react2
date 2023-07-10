@@ -1,5 +1,6 @@
 import { AxiosHttpClient } from './http-axios-client'
 import { type PostParams } from '@/data/protocols/http'
+import { expect } from '@jest/globals'
 import { getMockedAxios, mockResponse } from '../test/http/'
 import { faker } from '@faker-js/faker'
 import type axios from 'axios'
