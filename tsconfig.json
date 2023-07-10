@@ -8,6 +8,10 @@
     ],
     "esModuleInterop": true,
     "module": "esnext",
+    "types": [
+      "cypress",
+      "jest"
+    ],
     "moduleResolution": "node",
     "jsx": "react",
     "rootDir": "src",
@@ -21,7 +25,11 @@
     "resolveJsonModule": true,
   },
   "include": [
-    "src"
+    "src",
   ],
-  "exclude": []
+  "exclude": [
+    "./cypress.config.ts",
+    "cypress",
+    "**/*.cy.ts"
+  ]
 }
