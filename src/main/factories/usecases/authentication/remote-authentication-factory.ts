@@ -4,6 +4,6 @@ import { type Authentication } from '@/domain/usecases/authentication'
 import { makeUrl } from '@/main/factories/http/http-url-factory'
 
 export const makeRemoteAuthentication = (): Authentication => {
-  const url = makeUrl('/login')
+  const url = makeUrl('conta/login')
   return new RemoteAuthentication(url, makeHttpClient())
 }

@@ -1,6 +1,5 @@
 export type AccountParams = {
-  name: string
+  nome: string
   email: string
-  password: string
-  confirmPassword: string
+  senha: string
 }
