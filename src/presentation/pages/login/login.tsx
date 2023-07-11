@@ -71,7 +71,7 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
           <h2>Login</h2>
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
           <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
-          <button type="submit" disabled={state.isFormInvalid} className={Styles.submit}>Entrar</button>
+          <button type="submit" data-testid="submit" disabled={state.isFormInvalid} className={Styles.submit}>Entrar</button>
           <span data-testid="signup-link" className={Styles.link} onClick={() => { navigate('/signup') }}>Faça seu cadastro</span>
           <FormStatus />
         </form>
