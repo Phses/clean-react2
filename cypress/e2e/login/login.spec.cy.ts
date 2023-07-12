@@ -1,6 +1,7 @@
 import { toHaveAttribute } from "@testing-library/jest-dom/matchers"
 import { type } from "os"
 import { faker } from '@faker-js/faker'
+import { STATUS_CODES } from "http"
 
 describe('Login', () => {
   beforeEach(() => {
@@ -41,16 +42,24 @@ describe('Login', () => {
     cy.getByTestId('form-status').should('not.have.descendants')
   })
   it('Verifica estado da tela de login apos campos preenchidos credenciais invalidas', () => {
+    cy.intercept('POST', '**/login', (req) => {
+      req.reply({
+        forceError: true,
+        statusCode: 401,
+        body: {
+          error: faker.lorem.words(),
+        },
+      });
+    }).as('loginRequest');
     cy.get('input[type="email"]').type(faker.internet.email())
     cy.get('input[type="password"]').type(faker.lorem.word(6))
     cy.contains('button', 'Entrar').click()
-    cy.getByTestId('form-status')
-      .getByTestId('spinner').should('exist')
-      .getByTestId('main-error').should('not.exist')
-      .getByTestId('spinner').should('not.exist')
-      .getByTestId('main-error').should('exist')
+    cy.wait('@loginRequest')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('exist')
   })
   it('Verifica estado da tela de login apos campos preenchidos credenciais validas', () => {
+    cy.intercept('POST', '*/login', { status: 200, body: { token: faker.string.uuid() } }).as('mockedRequestLogin');
     cy.get('input[type="email"]').type('phsouzaesilva@gmail.com')
     cy.get('input[type="password"]').type('123456P*e')
     cy.contains('button', 'Entrar').click()

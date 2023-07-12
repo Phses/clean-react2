@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 
 export const mockAuthParams = (): AuthParams => {
   return {
-    senha: faker.internet.password(),
-    email: faker.internet.email()
+    email: faker.internet.email(),
+    password: faker.internet.password()
   }
 }

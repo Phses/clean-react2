@@ -58,9 +58,10 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
     })
     try {
       const accessToken = await addAccount.add({
-        nome: state.name,
+        name: state.name,
         email: state.email,
-        senha: state.password
+        password: state.password,
+        passwordConfirmation: state.confirmPassword
       })
       await storgeAccessToken.save(accessToken.token)
       navigate('/', { replace: true })

@@ -50,8 +50,8 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
     })
     try {
       const accessToken = await authentication.auth({
-        senha: state.password,
-        email: state.email
+        email: state.email,
+        password: state.password
       })
       await storgeAccessToken.save(accessToken.token)
       navigate('/', { replace: true })

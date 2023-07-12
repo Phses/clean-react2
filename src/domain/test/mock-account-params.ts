@@ -2,10 +2,11 @@ import { type AccountParams } from '@/domain/models'
 import { faker } from '@faker-js/faker'
 
 export const mockAccountParams = (): AccountParams => {
-  const senha = faker.internet.password()
+  const password = faker.internet.password()
   return {
-    nome: faker.person.fullName(),
+    name: faker.person.fullName(),
     email: faker.internet.email(),
-    senha
+    password,
+    passwordConfirmation: password
   }
 }
