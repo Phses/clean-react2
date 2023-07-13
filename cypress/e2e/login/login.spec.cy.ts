@@ -52,8 +52,7 @@ describe('Login', () => {
       });
     }).as('loginRequest');
     cy.get('input[type="email"]').type(faker.internet.email())
-    cy.get('input[type="password"]').type(faker.lorem.word(6))
-    cy.contains('button', 'Entrar').click()
+    cy.get('input[type="password"]').type(faker.lorem.word(6)).type('{enter}')
     cy.wait('@loginRequest')
     cy.url().should('eq', 'http://localhost:8080/login')
     cy.getByTestId('spinner').should('not.exist')
@@ -61,8 +60,8 @@ describe('Login', () => {
   })
   it('Verifica estado da tela de login possui erro caso token passado nao seja valido', () => {
     cy.intercept('POST', '*/login', { status: 200, body: { tokenInvalido: faker.string.uuid() } }).as('mockedRequestLogin');
-    cy.get('input[type="email"]').type('phsouzaesilva@gmail.com')
-    cy.get('input[type="password"]').type('123456P*e')
+    cy.get('input[type="email"]').type(faker.internet.email())
+    cy.get('input[type="password"]').type(faker.lorem.word(6))
     cy.contains('button', 'Entrar').click()
     cy.url().should('eq', 'http://localhost:8080/login')
     cy.getByTestId('spinner').should('not.exist')
@@ -70,10 +69,22 @@ describe('Login', () => {
   })
   it('Verifica estado da tela de login apos campos preenchidos credenciais validas', () => {
     cy.intercept('POST', '*/login', { status: 200, body: { token: faker.string.uuid() } }).as('mockedRequestLogin');
-    cy.get('input[type="email"]').type('phsouzaesilva@gmail.com')
-    cy.get('input[type="password"]').type('123456P*e')
+    cy.get('input[type="email"]').type(faker.internet.email())
+    cy.get('input[type="password"]').type(faker.lorem.word(6))
     cy.contains('button', 'Entrar').click()
     cy.url().should('eq', 'http://localhost:8080/')
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+  })
+  it('Verifica se é feita apenas uma requisicao apos double click', () => {
+    cy.intercept('POST', '*/login', { status: 200, body: { token: faker.string.uuid() } }).as('mockedRequestLogin');
+    cy.get('input[type="email"]').type(faker.internet.email())
+    cy.get('input[type="password"]').type(faker.lorem.word(6))
+    cy.contains('button', 'Entrar').dblclick()
+    cy.get('@mockedRequestLogin.all').should('have.length', 1)
+  })
+  it('Verifica se nao é feita a requisicao caso campos estejam invalidos', () => {
+    cy.intercept('POST', '*/login', { status: 200, body: { token: faker.string.uuid() } }).as('mockedRequestLogin');
+    cy.get('input[type="email"]').type(faker.internet.email()).type('{enter}')
+    cy.get('@mockedRequestLogin.all').should('have.length', 0)
   })
 })
