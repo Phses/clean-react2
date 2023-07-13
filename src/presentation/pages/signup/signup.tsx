@@ -22,30 +22,30 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    passwordConfirmation: '',
     nameError: '',
     emailError: '',
     passwordError: '',
-    confirmPasswordError: '',
+    passwordConfirmationError: '',
     mainError: ''
   })
 
   useEffect(() => {
-    const { name, email, password, confirmPassword } = state
-    const formData = { name, email, password, confirmPassword }
+    const { name, email, password, passwordConfirmation } = state
+    const formData = { name, email, password, passwordConfirmation }
     const nameError = validation.validate('name', formData)
     const emailError = validation.validate('email', formData)
     const passwordError = validation.validate('password', formData)
-    const confirmPasswordError = validation.validate('confirmPassword', formData)
+    const passwordConfirmationError = validation.validate('confirmPassword', formData)
     setState({
       ...state,
       nameError,
       emailError,
       passwordError,
-      confirmPasswordError,
-      isFormInvalid: !!nameError || !!emailError || !!passwordError || !!confirmPasswordError
+      passwordConfirmationError,
+      isFormInvalid: !!nameError || !!emailError || !!passwordError || !!passwordConfirmationError
     })
-  }, [state.name, state.email, state.password, state.confirmPassword])
+  }, [state.name, state.email, state.password, state.passwordConfirmation])
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event): Promise<void> => {
     event.preventDefault()
@@ -61,7 +61,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
         name: state.name,
         email: state.email,
         password: state.password,
-        passwordConfirmation: state.confirmPassword
+        passwordConfirmation: state.passwordConfirmation
       })
       await storgeAccessToken.save(accessToken.token)
       navigate('/', { replace: true })
@@ -81,7 +81,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
           <Input type="text" name="name" id="name" placeholder="Digite seu nome" />
           <Input type="email" name="email" id="email" placeholder="Digite seu email" />
           <Input type="password" name="password" id="password" placeholder="Digite sua senha" />
-          <Input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirme sua senha" />
+          <Input type="password" name="passwordConfirmation" id="passwordConfirmation" placeholder="Confirme sua senha" />
           <button type="submit" disabled={state.isFormInvalid} className={Styles.submit}>Cadastrar</button>
           <span data-testid='login-link' className={Styles.link} onClick={() => { navigate('/login') }}>Voltar para o login</span>
           <FormStatus />

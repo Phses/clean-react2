@@ -2,6 +2,7 @@ import { SetStorageSpy } from '@/data/test/mock-storage'
 import { faker } from '@faker-js/faker'
 import { expect } from '@jest/globals'
 import { AccessTokenLocalStorage } from './local-storage-accessToken'
+import { UnexpectedError } from '@/domain/erros'
 
 type SutTypes = {
   sut: AccessTokenLocalStorage
@@ -24,6 +25,13 @@ describe('Local storage', () => {
     await sut.save(accessToken)
     expect(setStorage.key).toBe('accessToken')
     expect(setStorage.value).toBe(accessToken)
+  })
+  test('Deve passar por unexpectedError caso token invalido', async () => {
+    const { sut, setStorage } = makeSut()
+    const accessToken = undefined
+    const promise = sut.save(accessToken)
+
+    await expect(promise).rejects.toThrow(UnexpectedError)
   })
   // test('Deve passar por erro caso setStorage passe', async () => {
   //     const { sut, setStorage } = makeSut();

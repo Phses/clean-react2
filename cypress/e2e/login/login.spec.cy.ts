@@ -55,6 +55,16 @@ describe('Login', () => {
     cy.get('input[type="password"]').type(faker.lorem.word(6))
     cy.contains('button', 'Entrar').click()
     cy.wait('@loginRequest')
+    cy.url().should('eq', 'http://localhost:8080/login')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('exist')
+  })
+  it('Verifica estado da tela de login possui erro caso token passado nao seja valido', () => {
+    cy.intercept('POST', '*/login', { status: 200, body: { tokenInvalido: faker.string.uuid() } }).as('mockedRequestLogin');
+    cy.get('input[type="email"]').type('phsouzaesilva@gmail.com')
+    cy.get('input[type="password"]').type('123456P*e')
+    cy.contains('button', 'Entrar').click()
+    cy.url().should('eq', 'http://localhost:8080/login')
     cy.getByTestId('spinner').should('not.exist')
     cy.getByTestId('main-error').should('exist')
   })

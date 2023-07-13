@@ -61,7 +61,7 @@ const simulaSubmitComCamposPreenchidos = (sut: RenderResult, name = faker.person
   Helper.preencheCampo(sut, 'name', name)
   Helper.preencheCampo(sut, 'email', email)
   Helper.preencheCampo(sut, 'password', password)
-  Helper.preencheCampo(sut, 'confirmPassword', password)
+  Helper.preencheCampo(sut, 'passwordConfirmation', password)
   const button = sut.getByRole('button', { name: 'Cadastrar' }) as HTMLButtonElement
   fireEvent.click(button)
 }
@@ -76,7 +76,7 @@ describe('SignUP testes', () => {
     Helper.verifcaFieldError(sut, 'name-status', validationErro)
     Helper.verifcaFieldError(sut, 'email-status', validationErro)
     Helper.verifcaFieldError(sut, 'password-status', validationErro)
-    Helper.verifcaFieldError(sut, 'confirmPassword-status', validationErro)
+    Helper.verifcaFieldError(sut, 'passwordConfirmation-status', validationErro)
   })
   test('Deve setar valor do input status com o erro do validation name', () => {
     const validationErro = faker.word.words()
@@ -99,12 +99,12 @@ describe('SignUP testes', () => {
     Helper.preencheCampo(sut, 'password')
     Helper.verificaFieldStatus(sut, 'password-status', '❌', validationErro)
   })
-  test('Deve setar valor do input status com o erro do validation confirmPassword', () => {
+  test('Deve setar valor do input status com o erro do validation passwordConfirmation', () => {
     const validationErro = faker.word.words()
     const { sut } = makeSut({ validationError: validationErro })
 
-    Helper.preencheCampo(sut, 'confirmPassword')
-    Helper.verificaFieldStatus(sut, 'confirmPassword-status', '❌', validationErro)
+    Helper.preencheCampo(sut, 'passwordConfirmation')
+    Helper.verificaFieldStatus(sut, 'passwordConfirmation-status', '❌', validationErro)
   })
   test('Deve setar valor do input status como vazio e mostrar sucesso name', () => {
     const { sut } = makeSut()
@@ -127,8 +127,8 @@ describe('SignUP testes', () => {
   test('Deve setar valor do input status como vazio e mostrar sucesso confirmPassword', () => {
     const { sut } = makeSut()
 
-    Helper.preencheCampo(sut, 'confirmPassword')
-    Helper.verificaFieldStatus(sut, 'confirmPassword-status', '✅')
+    Helper.preencheCampo(sut, 'passwordConfirmation')
+    Helper.verificaFieldStatus(sut, 'passwordConfirmation-status', '✅')
   })
   test('Deve habilitar botao em caso de validate nao retornar erro', () => {
     const { sut } = makeSut()
@@ -136,7 +136,7 @@ describe('SignUP testes', () => {
     Helper.preencheCampo(sut, 'name')
     Helper.preencheCampo(sut, 'email')
     Helper.preencheCampo(sut, 'password')
-    Helper.preencheCampo(sut, 'confirmPassword')
+    Helper.preencheCampo(sut, 'passwordConfirmation')
 
     const button = sut.getByRole('button', { name: 'Cadastrar' }) as HTMLButtonElement
     expect(button.disabled).toBe(false)
@@ -149,7 +149,7 @@ describe('SignUP testes', () => {
     const spinner = sut.getByTestId('spinner')
     expect(spinner).toBeTruthy()
   })
-  test('Deve chamar authentication com valores corretos', () => {
+  test('Deve chamar addaccount com valores corretos', () => {
     const { sut, addAccountSpy } = makeSut()
 
     const name = faker.person.fullName()
@@ -162,7 +162,7 @@ describe('SignUP testes', () => {
       name,
       email,
       password,
-      confirmPassword: password
+      passwordConfirmation: password
     })
   })
   test('Deve chamar authentication apenas uma vez enquanto isLoading', () => {
