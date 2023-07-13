@@ -1,4 +1,4 @@
-import * as Helper from '../../support/http-mock'
+import * as Helper from './http-mock'
 import { faker } from '@faker-js/faker'
 
 export const mockUnauthorizedError = () => {
@@ -11,4 +11,8 @@ export const mockOkWithInvalidBody = () => {
 
 export const mockOkWithValidBody = () => {
   Helper.mockOk('login', { token: faker.string.uuid() })
+}
+
+export const mockUnescpectdError = () => {
+  Helper.mockUnescpectdError('login')
 }

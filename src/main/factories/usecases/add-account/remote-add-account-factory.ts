@@ -4,6 +4,6 @@ import { RemoteAddAccount } from '@/data/usecases/add-account'
 import { type AddAccount } from '@/domain/usecases/add-account/add-account'
 
 export const makeRemoteAddAccount = (): AddAccount => {
-  const url = makeUrl('conta/cadastro')
+  const url = makeUrl('signup')
   return new RemoteAddAccount(url, makeHttpClient())
 }

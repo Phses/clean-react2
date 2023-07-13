@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import * as FormHelper from '../../support/form-helper'
-import * as HttpHelper from '../login/login-mocks'
+import * as HttpHelper from '../../support/login-mocks'
 
 const makeValidSubimit = () => {
   cy.get('input[type="email"]').type(faker.internet.email())
@@ -39,6 +39,13 @@ describe('Login', () => {
     cy.url().should('eq', 'http://localhost:8080/login')
     cy.getByTestId('spinner').should('not.exist')
     cy.getByTestId('main-error').should('exist')
+  })
+  it('Verifica estado da tela de login apos campos preenchidos erro inesperado', () => {
+    HttpHelper.mockUnescpectdError()
+    makeValidSubimit()
+    cy.url().should('eq', 'http://localhost:8080/login')
+    cy.getByTestId('spinner').should('not.exist')
+    cy.getByTestId('main-error').should('exist').contains('erro inesperado')
   })
   it('Verifica estado da tela de login possui erro caso token passado nao seja valido', () => {
     HttpHelper.mockOkWithInvalidBody()
