@@ -7,50 +7,6 @@
   min-height: 100vh;
   background-color: $disable-background;
 
-  .headerWrap {
-    display: flex;
-    background-color: $primary;
-    border-top: 40px solid $primaryDark;
-    justify-content: center;
-
-    .headerContent {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      max-width: 800px;
-      flex-grow: 1;
-      padding: 24px 40px;
-
-      img {
-        width: 60px;
-        align-self: center;
-      }
-
-      .logoutWrap {
-        display: flex;
-        flex-direction: column;
-        align-self: center;
-        align-items: flex-end;
-        justify-content: center;
-        color: $white;
-
-        span {
-          font-size: 16px;
-          margin-bottom: 8px;
-        }
-
-        a {
-          color: $white;
-          text-decoration: none;
-
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
-  }
-
   .contentWrap {
     display: flex;
     flex-direction: column;
@@ -84,6 +40,13 @@
         flex-basis: 48%;
         margin-bottom: 24px;
         box-shadow: 0px 1px 3px -1px $black;
+        position: relative;
+
+        .iconWrap {
+          position: absolute;
+          top: -16px;
+          right: -8px;
+        }
 
         .surveyContent {
           display: flex;
@@ -146,6 +109,20 @@
           &:hover {
             background-color: $primaryDark;
           }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .surveyListWrap {
+    .contentWrap {
+      ul {
+        flex-direction: column;
+
+        li {
+          flex-basis: 100%;
         }
       }
     }
