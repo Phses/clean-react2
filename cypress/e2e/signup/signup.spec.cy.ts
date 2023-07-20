@@ -73,7 +73,7 @@ describe('Signup', () => {
     HttpHelper.mockOkWithValidBody()
     makeValidSubimit()
     cy.url().should('eq', 'http://localhost:8080/')
-    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken')))
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('account')))
   })
   it('Verifica se é feita apenas uma requisicao apos double click', () => {
     HttpHelper.mockOkWithValidBody()

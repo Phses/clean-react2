@@ -6,7 +6,7 @@ import { type AccountStorage } from '@/domain/usecases/local-storage/local-store
 export class LocalAccountStorage implements AccountStorage {
   constructor(private readonly setStorage: SetStorage) { }
   async save(account: AuthAccount): Promise<void> {
-    if (account === undefined) {
+    if (account === undefined || !account.token || !account.name) {
       throw new UnexpectedError()
     }
     await this.setStorage.set('account', JSON.stringify(account))

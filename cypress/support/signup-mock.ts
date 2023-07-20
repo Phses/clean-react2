@@ -14,5 +14,5 @@ export const mockOkWithInvalidBody = () => {
 }
 
 export const mockOkWithValidBody = () => {
-  Helper.mockOk('signup', { token: faker.string.uuid() })
+  Helper.mockOk('signup', { token: faker.string.uuid(), name: faker.person.fullName() })
 }
