@@ -1,5 +1,5 @@
 import { UnexpectedError } from '@/domain/erros/'
-import { type AccountParams, type AuthToken } from '@/domain/models/'
+import { type AccountParams, type AuthAccount } from '@/domain/models/'
 import { HttpStatusCode } from '@/data/protocols/http/'
 import { expect } from '@jest/globals'
 import { HttpPostClientSpy } from '@/data/test/'
@@ -9,12 +9,12 @@ import { RemoteAddAccount } from './add-account'
 import { EmailInUseError } from '@/domain/erros/email-in-use-error'
 
 type sutTypes = {
-  httpPostClient: HttpPostClientSpy<AccountParams, AuthToken>
+  httpPostClient: HttpPostClientSpy<AccountParams, AuthAccount>
   sut: RemoteAddAccount
 }
 
 const makeSut = (url: string = faker.internet.url()): sutTypes => {
-  const httpPostClient = new HttpPostClientSpy<AccountParams, AuthToken>()
+  const httpPostClient = new HttpPostClientSpy<AccountParams, AuthAccount>()
   const sut = new RemoteAddAccount(url, httpPostClient)
   return {
     httpPostClient,
@@ -65,7 +65,8 @@ describe('Teste RemoteAddAccount', () => {
   test('Deve retornar AuthToken em caso de statusCode 200', async () => {
     const { sut, httpPostClient } = makeSut()
     const bodyResponse = {
-      token: faker.string.uuid()
+      token: faker.string.uuid(),
+      name: faker.person.fullName()
     }
     httpPostClient.response = {
       StatusCode: HttpStatusCode.ok,

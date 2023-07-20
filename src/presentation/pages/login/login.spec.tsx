@@ -8,7 +8,7 @@ import { ValidationSpy } from '@/presentation/test/login/validation-mock'
 import { faker } from '@faker-js/faker'
 import { InvalidCredentialsError } from '@/domain/erros'
 import { Router } from 'react-router-dom'
-import { LocalStorageAccessTokenMock } from '@/presentation/test/login/local-storage-accessToken-mock'
+import { LocalAccountStorageMock } from '@/presentation/test/login/local-storage-account-mock'
 import { AuthenticationSpy } from '@/domain/test/authentication-spy'
 import { Helper } from '@/presentation/test'
 
@@ -16,7 +16,7 @@ type sutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
   history: MemoryHistory
-  localStorageAccessToken: LocalStorageAccessTokenMock
+  localStorageAccount: LocalAccountStorageMock
 }
 
 type sutProps = {
@@ -28,13 +28,13 @@ const makeSut = (props?: sutProps): sutTypes => {
   const validationSpy = new ValidationSpy()
   validationSpy.errorMassage = props?.validationError
   const authenticationSpy = new AuthenticationSpy()
-  const localStorageAccessToken = new LocalStorageAccessTokenMock()
+  const localStorageAccount = new LocalAccountStorageMock()
   const sut = render(
     <Router location={history.location} navigator={history}>
       <Login
         validation={validationSpy}
         authentication={authenticationSpy}
-        storgeAccessToken={localStorageAccessToken}
+        accountStorage={localStorageAccount}
       />
     </Router>
   )
@@ -42,7 +42,7 @@ const makeSut = (props?: sutProps): sutTypes => {
     sut,
     authenticationSpy,
     history,
-    localStorageAccessToken
+    localStorageAccount
   }
 }
 
@@ -157,13 +157,13 @@ describe('Login testes', () => {
     expect(mainError.textContent).toBe(error.message)
   })
   test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {
-    const { sut, authenticationSpy, history, localStorageAccessToken } = makeSut()
+    const { sut, authenticationSpy, history, localStorageAccount } = makeSut()
 
     simulaSubmitComCamposPreenchidos(sut)
 
     await waitFor(() => sut.getByTestId('form'))
 
-    expect(localStorageAccessToken.accessToken).toBe(authenticationSpy.authToken.token)
+    expect(localStorageAccount.account).toEqual(authenticationSpy.authAccount)
     expect(history.location.pathname).toBe('/')
     expect(history.index).toBe(0)
   })

@@ -3,6 +3,7 @@ export type AuthParams = {
   password: string
 }
 
-export type AuthToken = {
+export type AuthAccount = {
   token: string
+  name: string
 }

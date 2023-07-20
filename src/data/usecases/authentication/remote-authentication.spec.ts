@@ -2,18 +2,18 @@ import { RemoteAuthentication } from '.'
 import { mockAuthParams } from '@/domain/test/'
 import { InvalidCredentialsError, UnexpectedError } from '@/domain/erros/'
 import { expect } from '@jest/globals'
-import { type AuthParams, type AuthToken } from '@/domain/models/'
+import { type AuthParams, type AuthAccount } from '@/domain/models/'
 import { HttpStatusCode } from '@/data/protocols/http/'
 import { HttpPostClientSpy } from '@/data/test/'
 import { faker } from '@faker-js/faker'
 
 type sutTypes = {
-  httpPostClient: HttpPostClientSpy<AuthParams, AuthToken>
+  httpPostClient: HttpPostClientSpy<AuthParams, AuthAccount>
   sut: RemoteAuthentication
 }
 
 const makeSut = (url: string = faker.internet.url()): sutTypes => {
-  const httpPostClient = new HttpPostClientSpy<AuthParams, AuthToken>()
+  const httpPostClient = new HttpPostClientSpy<AuthParams, AuthAccount>()
   const sut = new RemoteAuthentication(url, httpPostClient)
   return {
     httpPostClient,
@@ -64,7 +64,8 @@ describe('Teste remoteAutentication', () => {
   test('Deve retornar AuthToken em caso de statusCode 200', async () => {
     const { sut, httpPostClient } = makeSut()
     const bodyResponse = {
-      token: faker.string.uuid()
+      token: faker.string.uuid(),
+      name: faker.person.fullName()
     }
     httpPostClient.response = {
       StatusCode: HttpStatusCode.ok,

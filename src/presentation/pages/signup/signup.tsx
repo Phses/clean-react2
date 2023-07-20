@@ -5,16 +5,16 @@ import Context from '../../context/form-context'
 import { Footer, Input, LoginHeader, FormStatus } from '@/presentation/components/'
 import { type Validation } from '@/presentation/protocols/validation'
 import { type AddAccount } from '@/domain/usecases/add-account/add-account'
-import { type AccessTokenStorage } from '@/domain/usecases/local-storage/local-store-token'
+import { type AccountStorage } from '@/domain/usecases/local-storage/local-store-account'
 import { useNavigate } from 'react-router-dom'
 
 type Props = {
   validation: Validation
   addAccount: AddAccount
-  storgeAccessToken: AccessTokenStorage
+  accountStorage: AccountStorage
 }
 
-const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: Props) => {
+const SignUp: React.FC<Props> = ({ validation, addAccount, accountStorage }: Props) => {
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
@@ -63,7 +63,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount, storgeAccessToken }: 
         password: state.password,
         passwordConfirmation: state.passwordConfirmation
       })
-      await storgeAccessToken.save(accessToken.token)
+      await accountStorage.save(accessToken)
       navigate('/', { replace: true })
     } catch (error) {
       setState({

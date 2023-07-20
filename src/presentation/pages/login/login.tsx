@@ -6,15 +6,15 @@ import Context from '../../context/form-context'
 import { Footer, Input, LoginHeader, FormStatus } from '@/presentation/components/'
 import { type Validation } from '@/presentation/protocols/validation'
 import { type Authentication } from '@/domain/usecases/authentication'
-import { type AccessTokenStorage } from '@/domain/usecases/local-storage/local-store-token'
+import { type AccountStorage } from '@/domain/usecases/local-storage/local-store-account'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  storgeAccessToken: AccessTokenStorage
+  accountStorage: AccountStorage
 }
 
-const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken }: Props) => {
+const Login: React.FC<Props> = ({ validation, authentication, accountStorage }: Props) => {
   const navigate = useNavigate()
   const [state, setState] = useState({
     isLoading: false,
@@ -49,11 +49,11 @@ const Login: React.FC<Props> = ({ validation, authentication, storgeAccessToken 
       isLoading: true
     })
     try {
-      const accessToken = await authentication.auth({
+      const authAccount = await authentication.auth({
         email: state.email,
         password: state.password
       })
-      await storgeAccessToken.save(accessToken.token)
+      await accountStorage.save(authAccount)
       navigate('/', { replace: true })
     } catch (error) {
       setState({

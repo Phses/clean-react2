@@ -1,17 +1,17 @@
 import { SetStorageSpy } from '@/data/test/mock-storage'
 import { faker } from '@faker-js/faker'
 import { expect } from '@jest/globals'
-import { AccessTokenLocalStorage } from './local-storage-accessToken'
+import { LocalAccountStorage } from './local-account-storage'
 import { UnexpectedError } from '@/domain/erros'
 
 type SutTypes = {
-  sut: AccessTokenLocalStorage
+  sut: LocalAccountStorage
   setStorage: SetStorageSpy
 }
 
 const makeSut = (): SutTypes => {
   const setStorage = new SetStorageSpy()
-  const sut = new AccessTokenLocalStorage(setStorage)
+  const sut = new LocalAccountStorage(setStorage)
   return ({
     sut,
     setStorage
@@ -21,15 +21,18 @@ const makeSut = (): SutTypes => {
 describe('Local storage', () => {
   test('Deve chamar setStorage com dados corretos', async () => {
     const { sut, setStorage } = makeSut()
-    const accessToken = faker.string.uuid()
-    await sut.save(accessToken)
-    expect(setStorage.key).toBe('accessToken')
-    expect(setStorage.value).toBe(accessToken)
+    const account = {
+      token: faker.string.uuid(),
+      name: faker.person.fullName()
+    }
+    await sut.save(account)
+    expect(setStorage.key).toBe('account')
+    expect(setStorage.value).toBe(JSON.stringify(account))
   })
   test('Deve passar por unexpectedError caso token invalido', async () => {
-    const { sut, setStorage } = makeSut()
-    const accessToken = undefined
-    const promise = sut.save(accessToken)
+    const { sut } = makeSut()
+    const account = undefined
+    const promise = sut.save(account)
 
     await expect(promise).rejects.toThrow(UnexpectedError)
   })

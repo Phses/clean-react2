@@ -5,18 +5,18 @@ import { faker } from '@faker-js/faker'
 import { expect } from '@jest/globals'
 import { ValidationSpy } from '@/presentation/test/login/validation-mock'
 import { Helper } from '@/presentation/test'
-import { type AccountParams, type AuthToken } from '@/domain/models'
+import { type AccountParams, type AuthAccount } from '@/domain/models'
 import { type AddAccount } from '@/domain/usecases/add-account/add-account'
 import { EmailInUseError } from '@/domain/erros/email-in-use-error'
 import { type MemoryHistory, createMemoryHistory } from 'history'
 import { Router } from 'react-router-dom'
-import { LocalStorageAccessTokenMock } from '@/presentation/test/login/local-storage-accessToken-mock'
+import { LocalAccountStorageMock } from '@/presentation/test/login/local-storage-account-mock'
 
 type sutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
   history: MemoryHistory
-  localStorageAccessToken: LocalStorageAccessTokenMock
+  localAccountStorage: LocalAccountStorageMock
 }
 
 type sutProps = {
@@ -24,13 +24,13 @@ type sutProps = {
 }
 
 class AddAccountSpy implements AddAccount {
-  authToken: AuthToken = { token: faker.string.uuid() }
+  authAccount: AuthAccount = { token: faker.string.uuid(), name: faker.person.fullName() }
   params: AccountParams
   count: number = 0
-  async add(params: AccountParams): Promise<AuthToken> {
+  async add(params: AccountParams): Promise<AuthAccount> {
     this.params = params
     this.count++
-    return await Promise.resolve(this.authToken)
+    return await Promise.resolve(this.authAccount)
   }
 }
 
@@ -39,13 +39,13 @@ const makeSut = (props?: sutProps): sutTypes => {
   const validationSpy = new ValidationSpy()
   validationSpy.errorMassage = props?.validationError
   const addAccountSpy = new AddAccountSpy()
-  const localStorageAccessToken = new LocalStorageAccessTokenMock()
+  const localAccountStorage = new LocalAccountStorageMock()
   const sut = render(
     <Router location={history.location} navigator={history}>
       <SignUp
         validation={validationSpy}
         addAccount={addAccountSpy}
-        storgeAccessToken={localStorageAccessToken}
+        accountStorage={localAccountStorage}
       />
     </Router>
   )
@@ -53,7 +53,7 @@ const makeSut = (props?: sutProps): sutTypes => {
     sut,
     addAccountSpy,
     history,
-    localStorageAccessToken
+    localAccountStorage
   }
 }
 
@@ -198,13 +198,13 @@ describe('SignUP testes', () => {
     expect(mainError.textContent).toBe(error.message)
   })
   test('Deve setar accessToken ao localStorage em caso de sucesso', async () => {
-    const { sut, addAccountSpy, history, localStorageAccessToken } = makeSut()
+    const { sut, addAccountSpy, history, localAccountStorage } = makeSut()
 
     simulaSubmitComCamposPreenchidos(sut)
 
     await waitFor(() => sut.getByTestId('form'))
 
-    expect(localStorageAccessToken.accessToken).toBe(addAccountSpy.authToken.token)
+    expect(localAccountStorage.account).toEqual(addAccountSpy.authAccount)
     expect(history.location.pathname).toBe('/')
     expect(history.index).toBe(0)
   })
